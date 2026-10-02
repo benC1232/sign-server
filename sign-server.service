@@ -1,0 +1,13 @@
+[Unit]
+Description=Sign frame server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+WorkingDirectory=/home/pi/sign-server
+ExecStart=/home/pi/sign-server/.venv/bin/python -m sign_server --port 5001
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
