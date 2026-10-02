@@ -11,11 +11,13 @@ has been posted yet, the server draws a demo scene instead.
 
 | Endpoint            | Does                                                          |
 |---------------------|---------------------------------------------------------------|
-| `GET /frame`        | 8192 bytes: 128×32 RGB565, little-endian, row-major           |
-| `GET /frame.png`    | Same frame, scaled 8×, for checking in a browser              |
-| `POST /frame`       | Body is 8192 bytes of RGB565; served as-is until replaced     |
+| `GET /frame`        | 1–30 frames of 8192 bytes (128×32 RGB565, little-endian, row-major), back to back. More than one is an animation; `X-Frame-Ms` says how long to show each |
+| `GET /frame.png`    | The first frame, scaled 8×, for checking in a browser          |
+| `GET /frame.gif`    | All frames as an animated GIF                                  |
+| `POST /frame`       | Body is 8192 bytes of RGB565; replaces everything posted       |
 | `POST /frame?x=&y=&w=&h=` | Body is w×h×2 bytes; replaces just that rectangle         |
-| `DELETE /frame`     | Forget everything posted and go back to drawing the scene     |
+| `…&frames=N`        | N frames of that size back to back (1–30): an animated region  |
+| `DELETE /frame`     | Forget everything posted and go back to drawing the scene      |
 
 Pushing a frame from anywhere on the network:
 
@@ -27,6 +29,11 @@ Providers that only own part of the screen post a rectangle instead, e.g.
 weather-provider posts a 40×32 panel at `?x=88&y=0&w=40&h=32`. The first
 rectangle posted starts from a black screen, not the scene.
 
+A region can be animated by posting several frames (`&frames=N`). The screen
+then animates as long as its longest region: a region with fewer frames holds
+its last one, so a still panel next to an animated one stays put. Each frame
+shows for `--frame-ms` (500 ms by default).
+
 A wrong-sized body or out-of-bounds rectangle gets `400` and changes nothing.
 Posted frames live in memory only, so a restart goes back to the scene.
 There's no auth: anyone who can reach the server can post, so keep it on your
@@ -37,7 +44,7 @@ LAN.
 ```sh
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
-.venv/bin/python -m sign_server   # --host, --port (default 5001), --scene clock|israel, -v
+.venv/bin/python -m sign_server   # --host, --port (default 5001), --scene clock|israel, --frame-ms, -v
 ```
 
 ## Fallback scenes
