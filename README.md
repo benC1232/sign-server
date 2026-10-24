@@ -9,6 +9,16 @@ Providers draw the content and post it here, either as a full frame or as a
 rectangle they own (so several providers can share the screen). When nothing
 has been posted yet, the server draws a demo scene instead.
 
+## Providers
+
+| Provider | Shows |
+|----------|-------|
+| [weather-provider](https://github.com/benC1232/weather-provider) | Temperature and humidity (40×32, right edge), plus an animated IMS rain radar scope in the rain season or a heat-stress/UV panel in summer (88×32, left side) |
+
+Anything that can POST the format below can be a provider.
+
+## API
+
 | Endpoint            | Does                                                          |
 |---------------------|---------------------------------------------------------------|
 | `GET /frame`        | 1–30 frames of 8192 bytes (128×32 RGB565, little-endian, row-major), back to back. More than one is an animation; `X-Frame-Ms` says how long to show each |
@@ -26,7 +36,7 @@ curl -X POST --data-binary @frame.rgb565 http://<pi>:5001/frame
 ```
 
 Providers that only own part of the screen post a rectangle instead, e.g.
-weather-provider posts a 40×32 panel at `?x=88&y=0&w=40&h=32`. The first
+[weather-provider](https://github.com/benC1232/weather-provider) posts a 40×32 panel at `?x=88&y=0&w=40&h=32`. The first
 rectangle posted starts from a black screen, not the scene.
 
 A region can be animated by posting several frames (`&frames=N`). The screen
