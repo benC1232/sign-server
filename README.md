@@ -15,7 +15,11 @@ has been posted yet, the server draws a demo scene instead.
 |----------|-------|
 | [weather-provider](https://github.com/benC1232/weather-provider) | Temperature and humidity (40×32, right edge), plus an animated IMS rain radar scope in the rain season or a heat-stress/UV panel in summer (88×32, left side) |
 
-Anything that can POST the format below can be a provider.
+Anything that can POST the format below can be a provider. For a full
+example of using sign-server, see
+[weather-provider](https://github.com/benC1232/weather-provider): it owns two
+rectangles, posts animated frames to one of them, and re-posts on a timer so
+the panels come back after a server restart.
 
 ## API
 
